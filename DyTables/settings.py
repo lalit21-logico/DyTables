@@ -27,13 +27,14 @@ SECRET_KEY = '7kpacyn5(_nk-3@jw$yogq4sy99urbq3k@4&1@aov49_%v@_t%'
 DEBUG = True
 
 
-ALLOWED_HOSTS = ['13.232.198.166']
+ALLOWED_HOSTS = ['*', '13.232.198.166']
 
 
 # Application definition
 
 INSTALLED_APPS = [
     'TMS',
+    'social_django',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -103,6 +104,11 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+AUTHENTICATION_BACKENDS = {
+    'TMS.auth0backend.Auth0',
+    'django.contrib.auth.backends.ModelBackend'
+}
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
@@ -124,4 +130,22 @@ STATIC_URL = '/static/'
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     STATIC_DIR,
+]
+
+# login url
+
+LOGIN_URL = '/login/auth0'
+LOGIN_REDIRECT_URL = '/dashboard'
+
+# vonfigure auth0
+
+SOCIAL_AUTH_TRAILING_SLASH = False  # Remove trailing slash from routes
+SOCIAL_AUTH_AUTH0_DOMAIN = 'dev-67jdyo0h.us.auth0.com'
+SOCIAL_AUTH_AUTH0_KEY = 't9B0R0MLHydGf0HgACuRWqWRO8wqvHWM'
+SOCIAL_AUTH_AUTH0_SECRET = 'RBYiT5JLwiaDR6wAncWW9-uyXsuIzPMRG_jTLNkbzLNf364tO57Him-es7MAXROn'
+
+SOCIAL_AUTH_AUTH0_SCOPE = [
+    'openid',
+    'profile',
+    'email'
 ]

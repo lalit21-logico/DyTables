@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
+import secureCred
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
@@ -78,10 +79,15 @@ WSGI_APPLICATION = 'DyTables.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'djongo',
+        'NAME': 'Lalit',
+        'ENFORCE_SCHEMA': False,
+        'CLIENT': {
+                'host': secureCred.HOST_URL
+        }
     }
 }
 
@@ -144,7 +150,7 @@ LOGIN_REDIRECT_URL = '/dashboard'
 SOCIAL_AUTH_TRAILING_SLASH = False  # Remove trailing slash from routes
 SOCIAL_AUTH_AUTH0_DOMAIN = 'dev-67jdyo0h.us.auth0.com'
 SOCIAL_AUTH_AUTH0_KEY = 't9B0R0MLHydGf0HgACuRWqWRO8wqvHWM'
-SOCIAL_AUTH_AUTH0_SECRET = 'RBYiT5JLwiaDR6wAncWW9-uyXsuIzPMRG_jTLNkbzLNf364tO57Him-es7MAXROn'
+SOCIAL_AUTH_AUTH0_SECRET = secureCred.AUTH_SEC
 
 SOCIAL_AUTH_AUTH0_SCOPE = [
     'openid',

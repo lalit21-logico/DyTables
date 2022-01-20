@@ -12,6 +12,13 @@ def home(request):
 
 
 @login_required
+def createTable(request):
+    user_id = request.user.social_auth.get(provider='auth0').uid
+    print(user_id)
+    return render(request, 'index.html')
+
+
+@login_required
 def dashboard(request):
     user = request.user
     auth0user = user.social_auth.get(provider='auth0')

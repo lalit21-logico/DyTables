@@ -25,6 +25,8 @@ urlpatterns = [
     path('logout', views.logout),
     path('createTable', views.createTable),
     path('myTable', views.myTables),
+    path('getTable', views.getTable),
+    path('addData', views.addData),
     path('', include('django.contrib.auth.urls')),
     path('', include('social_django.urls')),
 

@@ -18,22 +18,25 @@
         <div class="col-xl-12">
             <hr>
             <div id="display1">
-                <div class="single_service d-flex justify-content-between align-items-center btn btn-outline-dark row">
-                    <div class="service_inner d-flex align-items-center col-md-4">
-                        <div class="thumb">
+                <a href="getTable?id={{d.table_name}}">
+
+                    <div
+                        class="single_service d-flex justify-content-between align-items-center btn btn-outline-dark row">
+                        <div class="service_inner d-flex align-items-center col-md-4">
+                            <div class="thumb">
+                            </div>
+                            <div class="p-rating col-md-3">
+                                {{ forloop.counter }}
+                            </div>
                         </div>
-                        <div class="p-rating col-md-3">
-                            {{ forloop.counter }}
+                        <h4 class="text-truncate"
+                            style="border: none; text-decoration:underline;overflow: hidden; max-width: 40ch;">
+                            <abbr title="">{{d.actual_table_name}}</abbr>
+                        </h4>
+                        <div class="col-md-3">
+                            <p><small>create on : {{d.created_at}}</small></p>
                         </div>
                     </div>
-                    <h4 class="text-truncate"
-                        style="border: none; text-decoration:underline;overflow: hidden; max-width: 40ch;">
-                        <abbr title="">{{d.actual_table_name}}</abbr>
-                    </h4>
-                    <div class="col-md-3">
-                        <p><small>create on : {{d.created_at}}</small></p>
-                    </div>
-                </div>
                 </a>
             </div>
         </div>

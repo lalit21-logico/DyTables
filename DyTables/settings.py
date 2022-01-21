@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'DyTables.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'Lal',
+        'NAME': 'Lalit',
         'ENFORCE_SCHEMA': False,
         'CLIENT': {
                 'host': secureCred.HOST_URL

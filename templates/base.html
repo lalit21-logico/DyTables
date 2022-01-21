@@ -29,9 +29,9 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <a class="nav-link" href="#">My Tables <span class="sr-only">(current)</span></a>
-                <a class="nav-link" href="#">Create New </a>
-                <a class="nav-link" href="#"> Support </a>
+                <a class="nav-link {{myTables}}" href="/myTable">My Tables <span class="sr-only">(current)</span></a>
+                <a class="nav-link {{createNew}}" href="/createTable">Create New </a>
+                <a class="nav-link {{support}}" href="#"> Support </a>
             </ul>
             <form class="form-inline my-2 my-lg-0">
                 {% if user.username == "" %}
@@ -49,8 +49,8 @@
     {% endblock %}
 
     <!-- FOOTER -->
-    <hr class="featurette-divider">
-    <footer class="container ">
+    <footer class="container fixed-bottom ">
+        <hr>
         <p class="float-right"><a href="#">Back to top</a></p>
         <p>&copy; 2021-2022 DyTabels, Inc. &middot; </p>
     </footer>

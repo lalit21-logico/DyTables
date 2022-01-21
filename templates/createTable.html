@@ -12,11 +12,12 @@
                     </div>
 
                 </div>
+                <p class="h6 mb-3 font-weight-normal mt-2 text-danger"> {{msg}} </p>
             </div>
             <form class="contact-form" action="createTable" method="post">
                 {% csrf_token%}
                 <div class="col-xl-12">
-                    <p class="h6 mb-3 font-weight-normal mt-2 text-danger"> {{msg}} </p>
+
                     <div class="form-group"><input type="text" class="form-control" name="table_name" id="table_name"
                             placeholder="Table Name" autofocus required>
 
@@ -24,6 +25,7 @@
 
                 </div>
                 <hr>
+                <input type="hidden" name="num_column" value="0">
                 <table class="table table-bordered">
                     <thead>
                         <tr>

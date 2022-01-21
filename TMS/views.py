@@ -11,11 +11,15 @@ def home(request):
     return render(request, 'home.html')
 
 
-@login_required
+# @login_required
 def createTable(request):
-    user_id = request.user.social_auth.get(provider='auth0').uid
-    print(user_id)
-    return render(request, 'index.html')
+    # user_id = request.user.social_auth.get(provider='auth0').uid
+    if request.method == 'POST':
+        print(request.POST)
+        name = request.POST['name1']
+        print(name)
+        return render(request, 'createTable.html')
+    return render(request, 'createTable.html')
 
 
 @login_required

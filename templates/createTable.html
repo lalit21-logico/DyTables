@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-lg">
+    <div class="table-responsive">
+        <div class="table-wrapper">
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-8">
+                        <h2>Table<b>Create</b></h2>
+                    </div>
+
+                </div>
+            </div>
+            <form class="contact-form" action="createTable" method="post">
+                {% csrf_token%}
+                <div class="col-xl-12">
+                    <p class="h6 mb-3 font-weight-normal mt-2 text-danger"> {{msg}} </p>
+                    <div class="form-group"><input type="text" class="form-control" name="table_name" id="table_name"
+                            placeholder="Table Name" autofocus required>
+
+                    </div>
+
+                </div>
+                <hr>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>colum name</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+
+                </table>
+                <hr>
+
+                <div class="col-sm-4">
+                    <button type="button" class="btn btn-info add-new"><i class="fa fa-plus"></i> Add
+                        Column</button>
+                    <hr>
+                    <div class="form-group">
+                        <input class="form-control" placeholder="Enter primary key one of column name" name="primary"
+                            type="text" autofocus="mandatory" required>
+                    </div>
+                    <button type="submit" value="Add" class="btn btn-success">Create Table</button>
+                </div>
+
+                <div class="col-xl-12">
+
+                </div>
+            </form>
+            <hr>
+
+            <hr>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+        //$('[data-toggle="tooltip"]').tooltip();
+        var actions = $("table td:last-child").html();
+        var index = 0;
+        // Append table with add row form on add new button click
+        $(".add-new").click(function () {
+            index = index + 1;
+            var row = '<tr>' +
+                '<td><input type="text" class="form-control" name="name' + index + '" id="name' + index + '" autofocus required></td>' +
+                '<td><select class="form-select-lg mb-3" id="default-select" class="" name="type' + index + '" autofocus required>">' +
+                '<option value="String">String</option>' +
+                '<option value="Number">Number</option>' +
+                '<option value="Boolean">Boolean</option>' +
+                '<option value="Email">Email</option>' +
+                '<option value="Datetime">Datetime</option>' +
+                '</td>' +
+
+                '</tr>' +
+                '<input type="hidden"  name="num_column" value="' + index + '">';
+
+            $("table").append(row);
+        });
+
+    });
+</script>
+
+
+{% endblock script %}

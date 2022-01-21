@@ -28,12 +28,6 @@ def addData(request):
         actual_table_name = data[0].actual_table_name
         data = eval(data[0].table_schema)
 
-        col = db[table_name]
-        table_data = col.find()
-        lis = []
-        for x in table_data:
-            lis.append(x)
-
         for key, value in data.items():
             msg = ""
             if key == "__primary":
@@ -55,14 +49,7 @@ def addData(request):
                     msg = "provide correct dd/yy/mm format date in column  and should be correct"+key
 
             if msg != "":
-                return render(request, 'tableView.html', {
-                    'myTables': 'active',
-                    'data': data,
-                    'table_name': table_name,
-                    'actual_table_name': actual_table_name,
-                    'table_data': lis,
-                    'msg': msg,
-                })
+                return getTable(request, table_name, msg, )
 
         row = {}
         primary = ""
@@ -72,36 +59,20 @@ def addData(request):
                 continue
             row[key] = request.POST[key]
 
+        col = db[table_name]
         if col.find({primary: request.POST[primary]}).count() > 0:
             msg = "provide unique value to column :"+primary
-            return render(request, 'tableView.html', {
-                'myTables': 'active',
-                'data': data,
-                'table_name': table_name,
-                'actual_table_name': actual_table_name,
-                'table_data': lis,
-                'msg': msg,
-            })
+            return getTable(request, table_name, msg)
 
         # inserting doc to  collection
         col.insert_one(row)
         table_data = col.find()
-        lis = []
-        for x in table_data:
-            print(x)
-            lis.append(x)
-        return render(request, 'tableView.html', {
-            'myTables': 'active',
-            'data': data,
-            'table_name': table_name,
-            'actual_table_name': actual_table_name,
-            'msg1': "added success",
-            'table_data': lis,
-        })
+        msg1 = "added success"
+        return getTable(request, table_name, msg, msg1)
 
 
 @login_required
-def getTable(request):
+def getTable(request, table_name="", msg="", msg1=""):
     user_id = request.user.social_auth.get(provider='auth0').uid
     if request.method == 'GET':
         table_name = request.GET['id']
@@ -109,12 +80,43 @@ def getTable(request):
             table_name=table_name, user_id=user_id)
         actual_table_name = data[0].actual_table_name
         data = eval(data[0].table_schema)
+
+        lis = []
+        col = db[table_name]
+        table_data = col.find()
+        lis = []
+        for x in table_data:
+            lis.append(x)
+
         return render(request, 'tableView.html', {
             'myTables': 'active',
             'data': data,
             'table_name': table_name,
-            'actual_table_name': actual_table_name
+            'actual_table_name': actual_table_name,
+            'table_data': lis,
         })
+
+    table_name = table_name
+    data = UserTables.objects.filter(
+        table_name=table_name, user_id=user_id)
+    actual_table_name = data[0].actual_table_name
+    data = eval(data[0].table_schema)
+    lis = []
+    col = db[table_name]
+    table_data = col.find()
+    lis = []
+    for x in table_data:
+        lis.append(x)
+
+    return render(request, 'tableView.html', {
+        'myTables': 'active',
+        'data': data,
+        'table_name': table_name,
+        'actual_table_name': actual_table_name,
+        'msg1': msg1,
+        'msg': msg,
+        'table_data': lis,
+    })
 
 
 @login_required

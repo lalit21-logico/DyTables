@@ -9,6 +9,7 @@ class UserTables(models.Model):
     user_id = models.CharField(max_length=100)
     user_email = models.CharField(max_length=100)
     table_name = models.CharField(unique=TRUE, max_length=60, null=False)
+    actual_table_name = models.CharField(max_length=100)
     table_schema = models.CharField(max_length=500)
     created_at = models.DateTimeField(auto_now_add=True)
 

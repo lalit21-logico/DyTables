@@ -7,8 +7,9 @@ from django.conf import settings
 from django.http import HttpResponseRedirect
 from urllib.parse import urlencode
 from TMS.models import *
-from TMS.validate import *
+from TMS.validate import checkValidation
 from pymongo import MongoClient
+from bson import ObjectId
 
 client = MongoClient(secureCred.HOST_URL)
 db = client['Lalit']
@@ -19,38 +20,34 @@ def home(request):
 
 
 @login_required
+def deleteRow(request):
+    if request.method == 'GET':
+        row_id = request.GET['row_id']
+        table_name = request.GET['id']
+        col = db[table_name]
+        msg = ""
+        if UserTables.objects.filter(
+                table_name=table_name).count() == 1:
+            col.delete_one({"_id": ObjectId(row_id), })
+            msg1 = "deleted successfully"
+            return getTable(request, table_name, msg, msg1)
+        msg = "unable to access"
+        return getTable(request, table_name, msg)
+
+
+@login_required
 def addData(request):
     user_id = request.user.social_auth.get(provider='auth0').uid
     if request.method == 'POST':
         table_name = request.POST['table_name']
         data = UserTables.objects.filter(
-            table_name=table_name, user_id=user_id)
-        actual_table_name = data[0].actual_table_name
+            table_name=table_name,
+            user_id=user_id
+        )
         data = eval(data[0].table_schema)
-
-        for key, value in data.items():
-            msg = ""
-            if key == "__primary":
-                continue
-            elif value == "Number":
-                if not checkNumber(request.POST[key]):
-                    msg = "provide correct numeral value in column "+key
-            elif value == "String":
-                if not checkString(request.POST[key]):
-                    msg = "provide correct alphaNumeric  String in column "+key
-            elif value == "Boolean":
-                if not checkBoolean(request.POST[key]):
-                    msg = "provide correct Boolean  True or False in column "+key
-            elif value == "Email":
-                if not checkEmail(request.POST[key]):
-                    msg = "provide correct Email in column "+key
-            elif value == "Datetime":
-                if not checkDate(request.POST[key]):
-                    msg = "provide correct dd/yy/mm format date in column  and should be correct"+key
-
-            if msg != "":
-                return getTable(request, table_name, msg, )
-
+        msg = checkValidation(request=request, data=data)
+        if "" != msg:
+            return getTable(request, table_name, msg)
         row = {}
         primary = ""
         for key, value in data.items():
@@ -66,7 +63,6 @@ def addData(request):
 
         # inserting doc to  collection
         col.insert_one(row)
-        table_data = col.find()
         msg1 = "added success"
         return getTable(request, table_name, msg, msg1)
 
@@ -76,34 +72,15 @@ def getTable(request, table_name="", msg="", msg1=""):
     user_id = request.user.social_auth.get(provider='auth0').uid
     if request.method == 'GET':
         table_name = request.GET['id']
-        data = UserTables.objects.filter(
-            table_name=table_name, user_id=user_id)
-        actual_table_name = data[0].actual_table_name
-        data = eval(data[0].table_schema)
-
-        lis = []
-        col = db[table_name]
-        table_data = col.find()
-        lis = []
-        for x in table_data:
-            lis.append(x)
-
-        return render(request, 'tableView.html', {
-            'myTables': 'active',
-            'data': data,
-            'table_name': table_name,
-            'actual_table_name': actual_table_name,
-            'table_data': lis,
-        })
-
-    table_name = table_name
+    else:
+        table_name = table_name
     data = UserTables.objects.filter(
         table_name=table_name, user_id=user_id)
     actual_table_name = data[0].actual_table_name
     data = eval(data[0].table_schema)
     lis = []
     col = db[table_name]
-    table_data = col.find()
+    table_data = col.find().sort("_id", -1)
     lis = []
     for x in table_data:
         lis.append(x)
@@ -204,9 +181,9 @@ def logout(request):
     return HttpResponseRedirect(logout_url)
 
 
-def index(request):
+def home(request):
     user = request.user
     if user.is_authenticated:
-        return redirect(dashboard)
+        return render(request, 'home.html')
     else:
-        return render(request, 'index.html')
+        return render(request, 'home.html')

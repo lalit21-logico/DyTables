@@ -52,3 +52,29 @@ def checkNumber(value):
         return True
     else:
         return False
+
+
+def checkValidation(request, data):
+    for key, value in data.items():
+        msg = ""
+        if key == "__primary":
+            continue
+        elif value == "Number":
+            if not checkNumber(request.POST[key]):
+                msg = "provide correct numeral value in column "+key
+        elif value == "String":
+            if not checkString(request.POST[key]):
+                msg = "provide correct alphaNumeric  String in column "+key
+        elif value == "Boolean":
+            if not checkBoolean(request.POST[key]):
+                msg = "provide correct Boolean  True or False in column "+key
+        elif value == "Email":
+            if not checkEmail(request.POST[key]):
+                msg = "provide correct Email in column "+key
+        elif value == "Datetime":
+            if not checkDate(request.POST[key]):
+                msg = "provide correct dd/yy/mm format date in column  and should be correct"+key
+
+        if msg != "":
+            return msg
+    return msg

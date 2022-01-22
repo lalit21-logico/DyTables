@@ -26,7 +26,8 @@
                         <th>{{ key }}<i><small>( {{value}} )</small></i></th>
                         {% endif %}
                         {% endfor %}
-                        <th>Action</th>
+                        <th>Add/Update</th>
+                        <th>Delete</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -58,24 +59,35 @@
                         <td>{{ forloop.counter }}</td>
                         {% for key, value in dat.items %}
                         {% if key == "_id" %}
+
                         {% else %}
                         <td>
                             {{value}}
                         </td>
                         {% endif %}
                         {% endfor %}
+
+                        {% for key, value in dat.items %}
+                        {% if key == "_id" %}
+
                         <td>
-                            UP
-                            <!-- <div class="col-sm-4">
-                                    <button type="submit" class="btn btn-info add-new"><i class="fa fa-plus"></i>
-                                        Add</button>
-                                </div> -->
+                            <a href="updateRow?id={{table_name}}&&row_id={{value}}">
+                                <button type="button" class="btn btn-outline-primary btn-sm">
+                                    Edit</i>
+                                </button>
+                            </a>
                         </td>
+                        <td>
+                            <a href="deleteRow?id={{table_name}}&&row_id={{value}} ">
+                                <button type="button" class="btn btn-outline-danger btn-sm">
+                                    Delete</i>
+                                </button>
+                            </a>
+                        </td>
+                        {% endif %}
                         {% endfor %}
                     </tr>
-
-
-
+                    {% endfor %}
                 </tbody>
             </table>
             <hr>

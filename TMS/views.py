@@ -127,11 +127,18 @@ def addData(request):
 
         if "" != row_id:
             if col.find({primary: request.POST[primary]}).count() > 0:
-                msg = "provide unique value to another column :"+primary
+                msg = "provide unique value  another column already having value :"+primary
                 return updateRow(request, table_name, row_id, msg)
         elif col.find({primary: request.POST[primary]}).count() > 0:
             msg = "provide unique value to column :"+primary
             return getTable(request, table_name, msg)
+
+        if request.POST[primary] == "":
+            msg = "primary key not be null"
+            if "" != row_id:
+                return updateRow(request, table_name, row_id, msg)
+            else:
+                return getTable(request, table_name, msg)
 
         if "" != row_id:
             col.update_one({"_id": ObjectId(row_id), }, {"$set": row})

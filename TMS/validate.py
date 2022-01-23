@@ -5,7 +5,7 @@ import re
 
 email_regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
 
-date_regex = r'^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$'
+date_regex = r'^(0?[1-9]|[12][0-9]|3[01])[/](0?[1-9]|1[012])[/]\d{4}$'
 
 
 def checkDate(value):
@@ -57,7 +57,10 @@ def checkNumber(value):
 def checkValidation(request, data):
     for key, value in data.items():
         msg = ""
+
         if key == "__primary":
+            continue
+        if request.POST[key] == "":
             continue
         elif value == "Number":
             if not checkNumber(request.POST[key]):
@@ -73,7 +76,7 @@ def checkValidation(request, data):
                 msg = "provide correct Email in column "+key
         elif value == "Datetime":
             if not checkDate(request.POST[key]):
-                msg = "provide correct dd/yy/mm format date in column  and should be correct"+key
+                msg = "provide correct dd/yy/mm format date in column  and should be correct "+key
 
         if msg != "":
             return msg

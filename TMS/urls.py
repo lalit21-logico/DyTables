@@ -28,6 +28,8 @@ urlpatterns = [
     path('getTable', views.getTable),
     path('addData', views.addData),
     path('deleteRow', views.deleteRow),
+    path('updateRow', views.updateRow),
+    path('filterData', views.filterData),
     path('', include('django.contrib.auth.urls')),
     path('', include('social_django.urls')),
 

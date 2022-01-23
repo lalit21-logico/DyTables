@@ -5,94 +5,170 @@
 <div class="container-fluid">
     <div class=" table-responsive">
         <div class="table-wrapper">
-            <div class="table-title">
+
+            <div class="container-fluid">
                 <div class="row">
-                    <div class="col-sm-8">
+                    <div class="col-sm-11">
                         <h2><b>{{actual_table_name}}</b></h2>
                     </div>
-
                 </div>
-                <p class="h6 mb-3 font-weight-normal mt-2 text-danger"> {{msg}} </p>
-                <p class="h6 mb-3 font-weight-normal mt-2 text-success"> {{msg1}} </p>
             </div>
-            <hr>
-            <table class="table table-bordered">
-                <thead>
+
+            <p class="h6 mb-3 font-weight-normal mt-2 text-danger"> {{msg}} </p>
+            <p class="h6 mb-3 font-weight-normal mt-2 text-success"> {{msg1}} </p>
+        </div>
+        <hr>
+        <form class="form-inline my-2 my-lg-0" action="filterData" method="post">
+            {% csrf_token %}
+            <select class="form-control mr-sm-2" id="mySelect" name="column" onchange="myFunction()" required>
+                <option value="" disabled selected>Choose Column</option>
+                {% for key, value in data.items %}
+                {% if key == "__primary" %}
+                {% else %}
+                <option value="{{key}}">{{key }}</option>
+                <option id="{{key }}" hidden="hidden">{{value}}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+            <select class="form-control mr-sm-2" id="mySelectType" name="filter_type" required>
+                <option value="" disabled selected>Filter as</option>
+
+            </select>
+            <input class="form-control mr-sm-2" type="search" placeholder="value" name="value" aria-label="Search">
+            <input type="hidden" name="table_name" value="{{table_name}}">
+            <input type="hidden" name="actual_table_name" value="{{actual_table_name}}">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">filter</button>
+        </form>
+
+        <hr>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    {% for key, value in data.items %}
+                    {% if key == "__primary" %}
+                    {% else %}
+                    <th>{{ key }}<i><small>( {{value}} )</small></i></th>
+                    {% endif %}
+                    {% endfor %}
+                    <th>Add/Update</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                <form class="contact-form" action="addData" method="post">
+                    {% csrf_token%}
+                    <input type="hidden" name="table_name" value="{{table_name}}">
+                    <input type="hidden" name="row_id" value="">
                     <tr>
-                        <th>#</th>
+                        <td></td>
                         {% for key, value in data.items %}
                         {% if key == "__primary" %}
                         {% else %}
-                        <th>{{ key }}<i><small>( {{value}} )</small></i></th>
+                        <td>
+                            <input type="text" class="form-control" name="{{key}}" id="{{key}}" autofocus>
+                        </td>
                         {% endif %}
                         {% endfor %}
-                        <th>Add/Update</th>
-                        <th>Delete</th>
+                        <td>
+                            <div class="col-sm-4">
+                                <button type="submit" class="btn btn-info add-new"><i class="fa fa-plus"></i>
+                                    Add</button>
+                            </div>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    <form class="contact-form" action="addData" method="post">
-                        {% csrf_token%}
-                        <input type="hidden" name="table_name" value="{{table_name}}">
-                        <tr>
-                            <td></td>
-                            {% for key, value in data.items %}
-                            {% if key == "__primary" %}
-                            {% else %}
-                            <td>
-                                <input type="text" class="form-control" name="{{key}}" id="{{key}}" autofocus required>
-                            </td>
-                            {% endif %}
-                            {% endfor %}
-                            <td>
-                                <div class="col-sm-4">
-                                    <button type="submit" class="btn btn-info add-new"><i class="fa fa-plus"></i>
-                                        Add</button>
-                                </div>
-                            </td>
-                        </tr>
-                    </form>
+                </form>
 
 
-                    {% for dat in table_data %}
-                    <tr>
-                        <td>{{ forloop.counter }}</td>
-                        {% for key, value in dat.items %}
-                        {% if key == "_id" %}
+                {% for dat in table_data %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    {% for key, value in dat.items %}
+                    {% if key == "_id" %}
 
-                        {% else %}
-                        <td>
-                            {{value}}
-                        </td>
-                        {% endif %}
-                        {% endfor %}
-
-                        {% for key, value in dat.items %}
-                        {% if key == "_id" %}
-
-                        <td>
-                            <a href="updateRow?id={{table_name}}&&row_id={{value}}">
-                                <button type="button" class="btn btn-outline-primary btn-sm">
-                                    Edit</i>
-                                </button>
-                            </a>
-                        </td>
-                        <td>
-                            <a href="deleteRow?id={{table_name}}&&row_id={{value}} ">
-                                <button type="button" class="btn btn-outline-danger btn-sm">
-                                    Delete</i>
-                                </button>
-                            </a>
-                        </td>
-                        {% endif %}
-                        {% endfor %}
-                    </tr>
+                    {% else %}
+                    <td>
+                        {{value}}
+                    </td>
+                    {% endif %}
                     {% endfor %}
-                </tbody>
-            </table>
-            <hr>
-        </div>
+
+                    {% for key, value in dat.items %}
+                    {% if key == "_id" %}
+
+                    <td>
+                        <a href="updateRow?id={{table_name}}&&row_id={{value}}">
+                            <button type="button" class="btn btn-outline-primary btn-sm">
+                                Edit</i>
+                            </button>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="deleteRow?id={{table_name}}&&row_id={{value}} ">
+                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                Delete</i>
+                            </button>
+                        </a>
+                    </td>
+                    {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <hr>
     </div>
+</div>
 </div>
 
 {% endblock content %}
+
+{% block script %}
+
+
+<script>
+    function myFunction() {
+        var x = document.getElementById("mySelect").value;
+        var x = document.getElementById("mySelect").options.namedItem(x).text;
+        console.log(x)
+        var text = '<option value="" disabled selected>Filter as</option>';
+        if (x == "String" || x == "Email") {
+            text += '<option value="isEqual"> is equal</option>' +
+                '<option value="isNotEqual"> is not equal</option>' +
+                '<option value="startsWith">starts with </option>' +
+                '<option value="endsWith">ends with </option>' +
+                '<option value="contains">contains </option>' +
+                '<option value="notContain">does not contain </option>' +
+                '<option value="null">null </option>' +
+                '<option value="notNull">not null </option>';
+
+        } else if (x == "Number") {
+            text += '<option value="greaterThen"> greater then</option>' +
+                '<option value="lessThen">less then</option>' +
+                '<option value="isEqual">is equal</option>' +
+                '<option value="isNotEqual">is not equal</option>' +
+                '<option value="null">null</option>' +
+                '<option value="notNull">not null</option>';
+
+        } else if (x == "Boolean") {
+            text += '<option value="True"> True</option>' +
+                '<option value="False">False</option>';
+
+        } else if (x == "Datetime") {
+            text += '<option value="more">more then n days ago</option>' +
+                '<option value="exactly">exactly days ago</option>' +
+                '<option value="less">less then n days ago</option>' +
+                '<option value="after">after</option>' +
+                '<option value="on">on</option>' +
+                '<option value="before">before</option>' +
+                '<option value="null">null</option>' +
+                '<option value="notNull">not null</option>';
+        }
+
+
+
+        document.getElementById("mySelectType").innerHTML = text;
+    }
+</script>
+
+{% endblock script %}

@@ -8,6 +8,7 @@ from django.http import HttpResponseRedirect
 from urllib.parse import urlencode
 from TMS.models import *
 from TMS.validate import checkValidation
+from TMS.customFilter import filtering
 from pymongo import MongoClient
 from bson import ObjectId
 
@@ -17,6 +18,68 @@ db = client['Lalit']
 
 def home(request):
     return render(request, 'home.html')
+
+
+@login_required
+def filterData(request):
+    user_id = request.user.social_auth.get(provider='auth0').uid
+    if request.method == 'POST':
+        filter_type = request.POST['filter_type']
+        column = request.POST['column']
+        value = request.POST['value']
+        table_name = request.POST['table_name']
+        actual_table_name = request.POST['actual_table_name']
+        data = UserTables.objects.filter(
+            table_name=table_name,
+            user_id=user_id
+        )
+        data = eval(data[0].table_schema)
+        print(filter_type, column, value)
+        msg = " "+column+" "+filter_type+" "+value
+        table_data = filtering(table_name, filter_type, column, value)
+        lis = []
+        for x in table_data:
+            lis.append(x)
+
+        number = ["greaterThen", "lessThen", "null", "notNull"]
+        date = ["more", "exactly", "less", "after", "on", "before"]
+
+        return render(request, 'tableView.html', {
+            'myTables': 'active',
+            'data': data,
+            'table_name': table_name,
+            'actual_table_name': actual_table_name,
+            'msg1': msg,
+            'table_data': lis,
+        })
+
+
+@login_required
+def updateRow(request, table_name="", row_id="", msg=""):
+    user_id = request.user.social_auth.get(provider='auth0').uid
+    if request.method == 'GET':
+        row_id = request.GET['row_id']
+        table_name = request.GET['id']
+    data = UserTables.objects.filter(
+        table_name=table_name,
+        user_id=user_id
+    )
+    actual_table_name = data[0].actual_table_name
+    data = eval(data[0].table_schema)
+    col = db[table_name]
+    table_data = col.find({"_id": ObjectId(row_id)})
+    lis = []
+    for x in table_data:
+        lis.append(x)
+    return render(request, 'updateRow.html', {
+        'myTables': 'active',
+        'table_name': table_name,
+        'table_data': lis,
+        'data': data,
+        'row_id': row_id,
+        'actual_table_name': actual_table_name,
+        'msg': msg
+    })
 
 
 @login_required
@@ -40,6 +103,7 @@ def addData(request):
     user_id = request.user.social_auth.get(provider='auth0').uid
     if request.method == 'POST':
         table_name = request.POST['table_name']
+        row_id = request.POST['row_id']
         data = UserTables.objects.filter(
             table_name=table_name,
             user_id=user_id
@@ -47,7 +111,10 @@ def addData(request):
         data = eval(data[0].table_schema)
         msg = checkValidation(request=request, data=data)
         if "" != msg:
-            return getTable(request, table_name, msg)
+            if "" != row_id:
+                return updateRow(request, table_name, row_id, msg)
+            else:
+                return getTable(request, table_name, msg)
         row = {}
         primary = ""
         for key, value in data.items():
@@ -57,13 +124,24 @@ def addData(request):
             row[key] = request.POST[key]
 
         col = db[table_name]
-        if col.find({primary: request.POST[primary]}).count() > 0:
+
+        if "" != row_id:
+            if col.find({primary: request.POST[primary]}).count() > 0:
+                msg = "provide unique value to another column :"+primary
+                return updateRow(request, table_name, row_id, msg)
+        elif col.find({primary: request.POST[primary]}).count() > 0:
             msg = "provide unique value to column :"+primary
             return getTable(request, table_name, msg)
 
+        if "" != row_id:
+            col.update_one({"_id": ObjectId(row_id), }, {"$set": row})
+            msg1 = "Update success"
+        else:
+            msg1 = "added success"
+            col.insert_one(row)
+
         # inserting doc to  collection
-        col.insert_one(row)
-        msg1 = "added success"
+
         return getTable(request, table_name, msg, msg1)
 
 
@@ -78,7 +156,6 @@ def getTable(request, table_name="", msg="", msg1=""):
         table_name=table_name, user_id=user_id)
     actual_table_name = data[0].actual_table_name
     data = eval(data[0].table_schema)
-    lis = []
     col = db[table_name]
     table_data = col.find().sort("_id", -1)
     lis = []
@@ -98,7 +175,7 @@ def getTable(request, table_name="", msg="", msg1=""):
 
 @login_required
 def myTables(request):
-    #collection_name = db["medicinedetails"]
+    # collection_name = db["medicinedetails"]
     user_id = request.user.social_auth.get(provider='auth0').uid
     data = UserTables.objects.filter(user_id=user_id).order_by('-id')
     print(data)

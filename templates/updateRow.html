@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <div class=" table-responsive">
+        <div class="table-wrapper">
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-8">
+                        <h2><b>{{actual_table_name}}</b></h2>
+                    </div>
+
+                </div>
+                <p class="h6 mb-3 font-weight-normal mt-2 text-danger"> {{msg}} </p>
+                <p class="h6 mb-3 font-weight-normal mt-2 text-success"> {{msg1}} </p>
+            </div>
+            <hr>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        {% for key, value in data.items %}
+                        {% if key == "__primary" %}
+                        {% else %}
+                        <th>{{ key }}<i><small>( {{value}} )</small></i></th>
+                        {% endif %}
+                        {% endfor %}
+                        <th>Update</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <form class="contact-form" action="addData" method="post">
+                        {% csrf_token%}
+                        <input type="hidden" name="table_name" value="{{table_name}}">
+                        <input type="hidden" name="row_id" value="{{row_id}}">
+                        <tr>
+                            {% for dat in table_data %}
+                            {% for key, value in dat.items %}
+                            {% if key == "_id" %}
+                            {% else %}
+                            <td>
+                                <input type="text" class="form-control" name="{{key}}" id="{{key}}" value="{{value}}"
+                                    autofocus required>
+                            </td>
+                            {% endif %}
+                            {% endfor %}
+                            {% endfor %}
+                            <td>
+                                <div class="col-sm-4">
+                                    <button type="submit" class="btn btn-info add-new">Update
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </form>
+                </tbody>
+            </table>
+            <hr>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

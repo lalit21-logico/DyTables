@@ -2,8 +2,6 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as log_out
 import json
-
-from numpy import save
 import secureCred
 from django.conf import settings
 from django.http import HttpResponseRedirect
@@ -13,6 +11,7 @@ from TMS.validate import checkValidation
 from TMS.customFilter import filtering
 from pymongo import MongoClient
 from bson import ObjectId
+
 
 client = MongoClient(secureCred.HOST_URL)
 db = client['Lalit']

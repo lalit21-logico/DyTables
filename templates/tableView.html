@@ -100,6 +100,7 @@
                                 Add</button>
 
                         </td>
+                        <td></td>
                     </tr>
                 </form>
 
@@ -137,6 +138,17 @@
                     {% endif %}
                     {% endfor %}
                 </tr>
+
+                {% empty %}
+                <tr>
+                    <td colspan="100%">
+                        <p class="h4 align-middle font-weight-normal mt-2 text-success">
+                            <br>
+                            No Records Found
+                        </p>
+                    </td>
+                </tr>
+
                 {% endfor %}
             </tbody>
         </table>

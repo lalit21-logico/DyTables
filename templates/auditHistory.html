@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <p class="h3 mb-3 font-weight-normal mt-2 text-dark">
+        Audit History - {{table_name}}
+        <br>
+    </p>
+
+    {% for d in data %}
+    <div class="row">
+        <div class="col-xl-12">
+            <hr>
+            {% if d.update_type == "delete" %}
+            <div class=" d-flex justify-content-between align-items-center btn btn-outline-danger row">
+
+                {% elif d.update_type == "update" %}
+                <div class=" d-flex justify-content-between align-items-center btn btn-outline-primary row">
+                    {% elif d.update_type == "insert"%}
+                    <div class=" d-flex justify-content-between align-items-center btn btn-outline-success row">
+                        {% endif %}
+
+                        <div class="col-md-9">
+                            <p>{{d.row_data}}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <p><small>{{d.update_type}} on : {{d.created_at}}</small></p>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+        {% endblock content %}

@@ -22,6 +22,20 @@ def home(request):
 
 
 @login_required
+def auditHistory(request):
+    user_id = request.user.social_auth.get(provider='auth0').uid
+    if request.method == 'GET':
+        table_name = request.GET['id']
+        data = AuditHistory.objects.filter(
+            table_id__table_name=table_name, table_id__user_id=user_id).order_by('-id')
+        return render(request, 'auditHistory.html', {
+            'myTables': 'active',
+            'data': data,
+            'table_name': data[0].table_id.actual_table_name
+        })
+
+
+@login_required
 def filterData(request):
     user_id = request.user.social_auth.get(provider='auth0').uid
     if request.method == 'POST':
@@ -109,8 +123,16 @@ def deleteRow(request):
         msg = ""
         if UserTables.objects.filter(
                 table_name=table_name).count() == 1:
+            user_tab_obj = UserTables.objects.filter(
+                table_name=table_name)[0]
+            row = col.find_one({"_id": ObjectId(row_id), })
             col.delete_one({"_id": ObjectId(row_id), })
             msg1 = "deleted successfully"
+            del row['_id']
+            AuditHistory(update_type="delete",
+                         row_data="Row Deleted "+str(row),
+                         table_id=user_tab_obj,
+                         ).save()
             return getTable(request, table_name, msg, msg1)
         msg = "unable to access"
         return getTable(request, table_name, msg)
@@ -126,6 +148,7 @@ def addData(request):
             table_name=table_name,
             user_id=user_id
         )
+        user_tab_obj = data[0]
         data = eval(data[0].table_schema)
         msg = checkValidation(request=request, data=data)
         if "" != msg:
@@ -144,8 +167,12 @@ def addData(request):
         col = db[table_name]
 
         if "" != row_id:
-            if col.find({primary: request.POST[primary]}).count() > 0:
-                msg = "provide unique value  another column already having value :"+primary
+            actual_row = col.find_one({"_id": ObjectId(row_id), })
+            if actual_row[primary] == request.POST[primary]:
+                pass
+            elif col.find({primary: request.POST[primary]}).count() > 0:
+                msg = "provide unique value  another column already having value " + \
+                    primary+" : "+request.POST[primary]
                 return updateRow(request, table_name, row_id, msg)
         elif col.find({primary: request.POST[primary]}).count() > 0:
             msg = "provide unique value to column :"+primary
@@ -159,9 +186,20 @@ def addData(request):
                 return getTable(request, table_name, msg)
 
         if "" != row_id:
+
             col.update_one({"_id": ObjectId(row_id), }, {"$set": row})
+            del actual_row['_id']
+            AuditHistory(update_type="update",
+                         row_data="Row "+str(actual_row) +
+                         "upadted by "+str(row),
+                         table_id=user_tab_obj,
+                         ).save()
             msg1 = "Update success"
         else:
+            AuditHistory(update_type="insert",
+                         row_data="Row Inserted "+str(row),
+                         table_id=user_tab_obj,
+                         ).save()
             msg1 = "added success"
             col.insert_one(row)
 
@@ -254,6 +292,18 @@ def createTable(request):
             actual_table_name=request.POST['table_name'],
             table_schema=schema
         ).save()
+
+        user_ob = UserTables.objects.filter(
+            user_id=user_id,
+            user_email=user_email,
+            table_name=ref_table_name,
+        )
+        user_tab_obj = user_ob[0]
+
+        AuditHistory(update_type="creation",
+                     row_data="Table created "+request.POST['table_name'],
+                     table_id=user_tab_obj
+                     ).save()
 
         return myTables(request)
     return render(request, 'createTable.html', {

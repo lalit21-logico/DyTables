@@ -1,10 +1,6 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<!-- auth0login/templates/dashboard.html -->
-
-
-
 <div class="container">
     <p class="h3 mb-3 font-weight-normal mt-2 text-dark">
         My Table
@@ -17,21 +13,20 @@
     <div class="row">
         <div class="col-xl-12">
             <hr>
-            <div id="display1">
+            <div>
                 <a href="getTable?id={{d.table_name}}">
 
                     <div
                         class="single_service d-flex justify-content-between align-items-center btn btn-outline-dark row">
-                        <div class="service_inner d-flex align-items-center col-md-4">
+                        <div class="d-flex align-items-center col-md-4">
                             <div class="thumb">
                             </div>
-                            <div class="p-rating col-md-3">
+                            <div class="col-md-3">
                                 {{ forloop.counter }}
                             </div>
                         </div>
-                        <h4 class="text-truncate"
-                            style="border: none; text-decoration:underline;overflow: hidden; max-width: 40ch;">
-                            <abbr title="">{{d.actual_table_name}}</abbr>
+                        <h4>
+                            {{d.actual_table_name}}
                         </h4>
                         <div class="col-md-3">
                             <p><small>create on : {{d.created_at}}</small></p>

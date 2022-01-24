@@ -25,3 +25,12 @@ class SavedFilter(models.Model):
     table_id = models.ForeignKey(
         UserTables, null=True, blank=True, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class AuditHistory(models.Model):
+    id = models.AutoField(primary_key=True)
+    update_type = models.CharField(max_length=25)
+    row_data = models.CharField(max_length=500)
+    table_id = models.ForeignKey(
+        UserTables, null=True, blank=True, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)

@@ -30,6 +30,7 @@ urlpatterns = [
     path('deleteRow', views.deleteRow),
     path('updateRow', views.updateRow),
     path('filterData', views.filterData),
+    path('auditHistory', views.auditHistory),
     path('', include('django.contrib.auth.urls')),
     path('', include('social_django.urls')),
 

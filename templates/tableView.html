@@ -8,9 +8,20 @@
 
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-sm-8">
-                        <h2><b>{{actual_table_name}}</b></h2>
+                    <div class="col-sm-5">
+                        <h2><b> </b></h2>
                     </div>
+                    <div class="col-sm-4">
+                        <h2><b>{{actual_table_name}}</b></h2>
+                        <a href="auditHistory?id={{table_name}}">
+                            <button type="button" class="btn btn-outline-primary mb-2 mt-2">
+                                Audit History
+                            </button>
+                        </a>
+                    </div>
+
+
+
                 </div>
             </div>
             <p class="h6 mb-3 font-weight-normal mt-2 text-danger"> {{msg}} </p>
@@ -84,10 +95,10 @@
                         {% endif %}
                         {% endfor %}
                         <td>
-                            <div class="col-sm-4">
-                                <button type="submit" class="btn btn-info add-new"><i class="fa fa-plus"></i>
-                                    Add</button>
-                            </div>
+
+                            <button type="submit" class="btn btn-outline-primary "><i class="fa fa-plus"></i>
+                                Add</button>
+
                         </td>
                     </tr>
                 </form>

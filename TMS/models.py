@@ -15,3 +15,13 @@ class UserTables(models.Model):
 
     class Meta:
         db_table = "user_table"
+
+
+class SavedFilter(models.Model):
+    id = models.AutoField(primary_key=True)
+    column = models.CharField(max_length=25)
+    filter_type = models.CharField(max_length=25)
+    value = models.CharField(max_length=25)
+    table_id = models.ForeignKey(
+        UserTables, null=True, blank=True, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)

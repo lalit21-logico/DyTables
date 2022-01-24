@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as log_out
 import json
+
+from numpy import save
 import secureCred
 from django.conf import settings
 from django.http import HttpResponseRedirect
@@ -29,26 +31,46 @@ def filterData(request):
         value = request.POST['value']
         table_name = request.POST['table_name']
         actual_table_name = request.POST['actual_table_name']
-        data = UserTables.objects.filter(
-            table_name=table_name,
-            user_id=user_id
-        )
-        data = eval(data[0].table_schema)
-        print(filter_type, column, value)
-        msg = " "+column+" "+filter_type+" "+value
-        if filter_type in ["more", "exactly", "less"]:
-            msg = " "+column+" "+filter_type+" then "+value+" days ago"
+    if request.method == 'GET':
+        id = request.GET['filter']
+        saved_filter = SavedFilter.objects.filter(id=id)
+        filter_type = saved_filter[0].filter_type
+        column = saved_filter[0].column
+        value = saved_filter[0].value
+        table_name = saved_filter[0].table_id.table_name
+        actual_table_name = saved_filter[0].table_id.actual_table_name
+        if user_id != saved_filter[0].table_id.user_id:
+            print("invalid access")
+            return ""
 
-        lis = filtering(table_name, filter_type, column, value)
-
-        return render(request, 'tableView.html', {
-            'myTables': 'active',
-            'data': data,
-            'table_name': table_name,
-            'actual_table_name': actual_table_name,
-            'msg1': msg,
-            'table_data': lis,
-        })
+    data = UserTables.objects.filter(
+        table_name=table_name,
+        user_id=user_id
+    )
+    user_tab_obj = data[0]
+    data = eval(data[0].table_schema)
+    print(filter_type, column, value)
+    msg = " "+column+" "+filter_type+" "+value
+    if filter_type in ["more", "exactly", "less"]:
+        msg = " "+column+" "+filter_type+" then "+value+" days ago"
+    lis = filtering(table_name, filter_type, column, value)
+    saved_filter = SavedFilter.objects.filter(column=column, filter_type=filter_type,
+                                              value=value, table_id=user_tab_obj)
+    if saved_filter.count() > 0:
+        saved_filter.delete()
+    SavedFilter(column=column, filter_type=filter_type,
+                value=value, table_id=user_tab_obj).save()
+    saved_filter = SavedFilter.objects.filter(
+        table_id=user_tab_obj).order_by('-id')[:10]
+    return render(request, 'tableView.html', {
+        'myTables': 'active',
+        'data': data,
+        'table_name': table_name,
+        'actual_table_name': actual_table_name,
+        'msg1': msg,
+        'table_data': lis,
+        'saved_filter': saved_filter
+    })
 
 
 @login_required
@@ -158,6 +180,7 @@ def getTable(request, table_name="", msg="", msg1=""):
         table_name = table_name
     data = UserTables.objects.filter(
         table_name=table_name, user_id=user_id)
+    user_tab_obj = data[0]
     actual_table_name = data[0].actual_table_name
     data = eval(data[0].table_schema)
     col = db[table_name]
@@ -166,6 +189,8 @@ def getTable(request, table_name="", msg="", msg1=""):
     for x in table_data:
         lis.append(x)
 
+    saved_filter = SavedFilter.objects.filter(
+        table_id=user_tab_obj).order_by('-id')[:10]
     return render(request, 'tableView.html', {
         'myTables': 'active',
         'data': data,
@@ -174,6 +199,7 @@ def getTable(request, table_name="", msg="", msg1=""):
         'msg1': msg1,
         'msg': msg,
         'table_data': lis,
+        'saved_filter': saved_filter,
     })
 
 

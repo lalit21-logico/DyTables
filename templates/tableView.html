@@ -8,19 +8,30 @@
 
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-sm-11">
+                    <div class="col-sm-8">
                         <h2><b>{{actual_table_name}}</b></h2>
                     </div>
                 </div>
             </div>
-
             <p class="h6 mb-3 font-weight-normal mt-2 text-danger"> {{msg}} </p>
             <p class="h6 mb-3 font-weight-normal mt-2 text-success"> {{msg1}} </p>
         </div>
         <hr>
+
+        <select class="form-control col-sm-6 mb-1 mr-sm-2 " id="dynamic_select" onchange="getRecent()">
+            <option value=""> <i class="fa fa-history" aria-hidden="true"></i>
+                Recent</option>
+            {% for filter in saved_filter %}
+            <option value="filterData?filter={{filter.id}}">
+                {{filter.column}} {{filter.filter_type}} {{filter.value}}
+            </option>
+            {% endfor %}
+        </select>
+
         <form class="form-inline my-2 my-lg-0" action="filterData" method="post">
             {% csrf_token %}
-            <select class="form-control mr-sm-2" id="mySelect" name="column" onchange="myFunction()" required>
+            <select class="form-control col-sm-2 mb-1 mt-1 mr-sm-2" id="mySelect" name="column" onchange="myFunction()"
+                required>
                 <option value="" disabled selected>Choose Column</option>
                 {% for key, value in data.items %}
                 {% if key == "__primary" %}
@@ -30,15 +41,17 @@
                 {% endif %}
                 {% endfor %}
             </select>
-            <select class="form-control mr-sm-2" id="mySelectType" name="filter_type" required>
+            <select class="form-control col-sm-2 mb-1 mt-1 mr-sm-2" id="mySelectType" name="filter_type" required>
                 <option value="" disabled selected>Filter as</option>
-
             </select>
-            <input class="form-control mr-sm-2" type="search" placeholder="value" name="value" aria-label="Search">
+
+            <input class="form-control col-sm-1  mb-1 mt-1 mr-sm-2" type="search" placeholder="value" name="value"
+                aria-label="Search">
             <input type="hidden" name="table_name" value="{{table_name}}">
             <input type="hidden" name="actual_table_name" value="{{actual_table_name}}">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">filter</button>
+            <button class="btn btn-outline-success col-sm-1 mr-sm-2" type="submit">filter</button>
         </form>
+
 
         <hr>
         <table class="table table-bordered">
@@ -127,6 +140,16 @@
 
 
 <script>
+
+    function getRecent() {
+        var url = document.getElementById("dynamic_select").value;
+        if (url) {
+            console.log(url)
+            window.location = url;
+        }
+        return false;
+    }
+
     function myFunction() {
         var x = document.getElementById("mySelect").value;
         var x = document.getElementById("mySelect").options.namedItem(x).text;
@@ -164,11 +187,10 @@
                 '<option value="null">null</option>' +
                 '<option value="notNull">not null</option>';
         }
-
-
-
         document.getElementById("mySelectType").innerHTML = text;
     }
+
+
 </script>
 
 {% endblock script %}

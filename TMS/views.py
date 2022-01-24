@@ -36,13 +36,10 @@ def filterData(request):
         data = eval(data[0].table_schema)
         print(filter_type, column, value)
         msg = " "+column+" "+filter_type+" "+value
-        table_data = filtering(table_name, filter_type, column, value)
-        lis = []
-        for x in table_data:
-            lis.append(x)
+        if filter_type in ["more", "exactly", "less"]:
+            msg = " "+column+" "+filter_type+" then "+value+" days ago"
 
-        number = ["greaterThen", "lessThen", "null", "notNull"]
-        date = ["more", "exactly", "less", "after", "on", "before"]
+        lis = filtering(table_name, filter_type, column, value)
 
         return render(request, 'tableView.html', {
             'myTables': 'active',

@@ -28,6 +28,13 @@ def auditHistory(request):
         table_name = request.GET['id']
         data = AuditHistory.objects.filter(
             table_id__table_name=table_name, table_id__user_id=user_id).order_by('-id')
+        if data.count() <= 0:
+            return render(request, 'auditHistory.html', {
+                'myTables': 'active',
+                'data': data,
+                'table_name': "Not Available "
+            })
+
         return render(request, 'auditHistory.html', {
             'myTables': 'active',
             'data': data,

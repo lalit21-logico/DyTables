@@ -19,20 +19,34 @@
                 <div class=" d-flex justify-content-between align-items-center btn btn-outline-primary row">
                     {% elif d.update_type == "insert"%}
                     <div class=" d-flex justify-content-between align-items-center btn btn-outline-success row">
-                        {% endif %}
+                        {% else %}
+                        <div class=" d-flex justify-content-between align-items-center btn btn-outline-dark row">
 
-                        <div class="col-md-9">
-                            <p>{{d.row_data}}</p>
+                            {% endif %}
+
+                            <div class="col-md-9">
+                                <p>{{d.row_data}}</p>
+                            </div>
+                            <div class="col-md-3">
+                                <p><small>{{d.update_type}} on : {{d.created_at}}</small></p>
+                            </div>
+
+
                         </div>
-                        <div class="col-md-3">
-                            <p><small>{{d.update_type}} on : {{d.created_at}}</small></p>
-                        </div>
-
-
                     </div>
                 </div>
-            </div>
-            {% endfor %}
+                {% empty %}
 
-        </div>
-        {% endblock content %}
+                <p class="h4 mb-3 font-weight-normal mt-2 text-success">
+
+                    <br>
+                    No History After perform some operations to
+                    generate audit History
+
+                </p>
+
+                {% endfor %}
+                {% endfor %}
+
+            </div>
+            {% endblock content %}

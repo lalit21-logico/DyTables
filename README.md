@@ -89,4 +89,4 @@ _**Note: Change debug False to True inside settings.py (for running in localhost
 
 **Audit History**
 
-![alt_text](https://github.com/lalit21-logico/DyTables/blob/master/static/images/My%20Tables.png)
+![alt_text](https://github.com/lalit21-logico/DyTables/blob/master/static/images/Audit%20History.png)

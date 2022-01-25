@@ -22,23 +22,20 @@ _**Note: Here you can make a coloumn a primary key**_
 
 ## Setup
 
-_**Note : However For running this project another python file is required which is secureCred.py**_
-
-_**Note : Create the sucureCred.py file under the project directory which is DyTables/secureCred.py**_
+_**Note : Create the secureCred.py file under the project directory which is DyTables/secureCred.py**_
 
 ## secureCred.py should contain the varialbles listed below
 
+```python
 AUTH_SEC = "provide auth0 AuthUrl"
-
 HOST_URL = 'MongoDB connection URL'
+```
 
-**Installation**
+## Installation
 
 > ``` python
 > pip install -r requirements.text
 > ```
-
-_**Note: Before running the project install all the required files**_
 
 _**Note: Change debug False to True inside settings.py (for running in localhost)**_
 
@@ -63,7 +60,11 @@ _**Note: Change debug False to True inside settings.py (for running in localhost
 
 ## User Stories
 
->As a User of Dytables Web Application
+_**As a  user, I want to receive an SMS when the login  with my Credential so that  My account security maintains**_
+
+_**As the project manager of a management team, I want our Dynamic Tables application to include all the records of every user and update all the required values so that my team can collaborate and get all the required information so that every member in the group gets real-time updates of every entries we enter in the table.**_
+
+_**As a user, I want to Add MASS Data on a single click, it helps me to manage time.**_
 
 ## Balsamiq design of all pages
 

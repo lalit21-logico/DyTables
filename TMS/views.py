@@ -17,12 +17,12 @@ client = MongoClient(secureCred.HOST_URL)
 db = client['Lalit']
 
 
-def handler404(request, exception):
-    return render(request, 'errorPage/404.html', status=404)
+# def handler404(request, exception):
+#     return render(request, 'errorPage/404.html', status=404)
 
 
-def handler500(request):
-    return render(request, 'errorPage/404.html', status=500)
+# def handler500(request):
+#     return render(request, 'errorPage/404.html', status=500)
 
 
 def home(request):

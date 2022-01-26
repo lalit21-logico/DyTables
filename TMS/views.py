@@ -68,7 +68,6 @@ def filterData(request):
         table_name = saved_filter[0].table_id.table_name
         actual_table_name = saved_filter[0].table_id.actual_table_name
         if user_id != saved_filter[0].table_id.user_id:
-            print("invalid access")
             return ""
 
     data = UserTables.objects.filter(
@@ -259,7 +258,6 @@ def myTables(request):
     # collection_name = db["medicinedetails"]
     user_id = request.user.social_auth.get(provider='auth0').uid
     data = UserTables.objects.filter(user_id=user_id).order_by('-id')
-    #print(data)
     return render(request, 'myTable.html', {
         'data': data,
         'myTables': 'active'

@@ -16,7 +16,6 @@ def dateFiltering(table_name, filter_type, column, value):
 
     if checkDate(value):
         day, month, year = value.split('/')
-        print(table_data)
         ex_value = datetime.date(int(year), int(month), int(day))
         for x in table_data:
             day, month, year = x[column].split('/')
@@ -32,7 +31,6 @@ def dateFiltering(table_name, filter_type, column, value):
                     lis.append(x)
 
     elif value.isnumeric():
-        print("here")
         if filter_type in ["more", "exactly", "less"]:
             today = datetime.date.today()
             n_days_ago = today - datetime.timedelta(int(value))

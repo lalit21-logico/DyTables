@@ -9,5 +9,5 @@ urlpatterns = [
     path('', include('TMS.urls')),
 ]
 
-handler404 = TMS.views.handler404
-handler500 = TMS.views.handler500
+#handler404 = TMS.views.handler404
+#handler500 = TMS.views.handler500

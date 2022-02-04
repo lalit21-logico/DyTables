@@ -28,7 +28,7 @@ SECRET_KEY = '7kpacyn5(_nk-3@jw$yogq4sy99urbq3k@4&1@aov49_%v@_t%'
 DEBUG = False
 
 
-ALLOWED_HOSTS = ['13.232.198.166']
+ALLOWED_HOSTS = ['*','13.126.154.33']
 
 
 # Application definition

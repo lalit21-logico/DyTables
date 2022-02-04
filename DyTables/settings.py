@@ -145,6 +145,7 @@ STATICFILES_DIRS = [
 LOGIN_URL = '/login/auth0'
 LOGIN_REDIRECT_URL = '/'
 
+
 # vonfigure auth0
 
 SOCIAL_AUTH_TRAILING_SLASH = False  # Remove trailing slash from routes
